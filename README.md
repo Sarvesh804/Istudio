@@ -27,10 +27,10 @@ Ever struggled with clunky student management systems? We did too. That's why we
 
 
 2. **Add Your Supabase Details**
-  Create a `.env.local` file with:
-  ```bash
-  NEXT_PUBLIC_SUPABASE_URL=your_url_here
-  NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
+   Create a `.env.local` file with:
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=your_url_here
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
 
 
 3. Fire it up
