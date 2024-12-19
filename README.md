@@ -37,24 +37,6 @@ Ever struggled with clunky student management systems? We did too. That's why we
    ```bash
    npm run dev
 
-Visit `http://localhost:3000` and you're good to go! 🎉
-
-
-
-2. **Add Your Supabase Details**
-Create a `.env.local` file with:
-
-```plaintext
-NEXT_PUBLIC_SUPABASE_URL=your_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
-```
-
-
-3. **Fire It Up**
-
-```shellscript
-npm run dev
-```
 
 Visit `http://localhost:3000` and you're good to go! 🎉
 
