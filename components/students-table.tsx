@@ -44,8 +44,8 @@ export function StudentsTable() {
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate)
     if (selectedDate) {
-      setFilter('date_joined', `${(selectedDate.getMonth() + 1).toString().padStart(2, '0') // Month (0-indexed, so +1)
-        }/${selectedDate.getDate().toString().padStart(2, '0') // Day
+      setFilter('date_joined', `${(selectedDate.getMonth() + 1).toString().padStart(2, '0')
+        }/${selectedDate.getDate().toString().padStart(2, '0')
         }/${selectedDate.getFullYear()}`)
     }
   }
