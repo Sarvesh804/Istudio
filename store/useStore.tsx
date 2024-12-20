@@ -31,8 +31,8 @@ interface Student {
 interface Filters {
   cohort: string
   status: string
-  course: string
-  dateJoined: string
+  courses: string
+  date_joined: string
 }
 
 interface State {
@@ -50,8 +50,8 @@ interface State {
 const defaultFilters: Filters = {
   cohort: '',
   status: '',
-  course: '',
-  dateJoined: '',
+  courses: '',
+  date_joined: '',
 }
 
 export const useStore = create<State>((set, get) => ({
@@ -103,6 +103,7 @@ export const useStore = create<State>((set, get) => ({
 
   setFilter: (key: keyof Filters, value: string) => {
     const { students, filters } = get()
+    console.log(filters)
     const newFilters = { ...filters, [key]: value }
     const filtered = applyFilters(students, newFilters)
     set({ filters: newFilters, filteredStudents: filtered })
@@ -118,10 +119,10 @@ function applyFilters(students: Student[], filters: Filters): Student[] {
   return students.filter(student => {
     if (filters.cohort && student.cohort !== filters.cohort) return false
     if (filters.status && student.status !== filters.status) return false
-    if (filters.course && !student.courses.includes(filters.course)) return false
-    if (filters.dateJoined) {
+    if (filters.courses && !student.courses.includes(filters.courses)) return false
+    if (filters.date_joined) {
       const date = new Date(student.date_joined)
-      const filterDate = new Date(filters.dateJoined)
+      const filterDate = new Date(filters.date_joined)
       if (date.toDateString() !== filterDate.toDateString()) return false
     }
     return true

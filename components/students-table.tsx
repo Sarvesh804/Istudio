@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -18,6 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar as CalendarComponent } from '@/components/ui/calendar'
+import { format } from 'date-fns'
 import {
   Select,
   SelectContent,
@@ -26,16 +29,26 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useStore } from '@/store/useStore'
-import { BookOpen, Calculator, AlertCircle, RefreshCw, Filter, Users } from 'lucide-react'
+import { BookOpen, Calculator, AlertCircle, RefreshCw, Filter, Users, Calendar } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AddStudentDialog } from './add-student-dialog'
 
 export function StudentsTable() {
   const { filteredStudents, loading, error, fetchStudents, setFilter, resetFilters } = useStore()
+  const [date, setDate] = useState<Date>()
 
   useEffect(() => {
     fetchStudents()
   }, [fetchStudents])
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate)
+    if (selectedDate) {
+      setFilter('date_joined', `${(selectedDate.getMonth() + 1).toString().padStart(2, '0') // Month (0-indexed, so +1)
+        }/${selectedDate.getDate().toString().padStart(2, '0') // Day
+        }/${selectedDate.getFullYear()}`)
+    }
+  }
 
   if (error) {
     return (
@@ -43,9 +56,9 @@ export function StudentsTable() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           className="mt-2"
           onClick={() => fetchStudents()}
         >
@@ -63,9 +76,9 @@ export function StudentsTable() {
             <SelectTrigger className="w-[140px] bg-gray-100 text-gray-600 font-bold">
               <SelectValue placeholder="Select Year" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="AY 2024-25">AY 2024-25</SelectItem>
-              <SelectItem value="AY 2023-24">AY 2023-24</SelectItem>
+            <SelectContent >
+              <SelectItem value="AY 2024-25" onMouseDown={() => setFilter('cohort', 'AY 2024-25')}>AY 2024-25</SelectItem>
+              <SelectItem value="AY 2023-24" onMouseDown={() => setFilter('cohort', 'AY 2023-24')}>AY 2023-24</SelectItem>
             </SelectContent>
           </Select>
           <Select defaultValue="CBSE 9">
@@ -73,10 +86,26 @@ export function StudentsTable() {
               <SelectValue placeholder="Select Class" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="CBSE 9">CBSE 9</SelectItem>
-              <SelectItem value="CBSE 10">CBSE 10</SelectItem>
+              <SelectItem value="CBSE 9" onMouseDown={() => setFilter('courses', 'CBSE 9 Science')}>CBSE 9</SelectItem>
+              <SelectItem value="CBSE 10" onMouseDown={() => setFilter('courses', 'CBSE 10')}>CBSE 10</SelectItem>
             </SelectContent>
           </Select>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-[180px] pl-3 text-left font-normal">
+                {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                <Calendar className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <CalendarComponent
+                mode="single"
+                selected={date}
+                onSelect={handleDateSelect}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -113,7 +142,7 @@ export function StudentsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-        {loading ? (
+          {loading ? (
             <TableRow>
               <TableCell colSpan={6} className="text-center py-10">
                 <div className="flex items-center justify-center">
@@ -158,9 +187,8 @@ export function StudentsTable() {
                 <TableCell>{new Date(student.last_login).toLocaleString()}</TableCell>
                 <TableCell className='w-[80px] p-5'>
                   <div
-                    className={`h-4 w-4 rounded-full  ${
-                      student.status === 'active' ? 'bg-green-500' : 'bg-red-500'
-                    }`}
+                    className={`h-4 w-4 rounded-full  ${student.status === 'active' ? 'bg-green-500' : 'bg-red-500'
+                      }`}
                   />
                 </TableCell>
               </TableRow>
